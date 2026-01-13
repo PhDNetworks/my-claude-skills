@@ -1,0 +1,77 @@
+{
+  "id": "trust-signals-section",
+  "elType": "section",
+  "settings": {
+    "layout": "boxed",
+    "background_background": "classic",
+    "background_color": "#f8fafc",
+    "padding": {"top": "40", "right": "20", "bottom": "40", "left": "20", "unit": "px"}
+  },
+  "elements": [
+    {
+      "id": "trust-grid",
+      "elType": "container",
+      "settings": {
+        "flex_direction": "row",
+        "flex_wrap": "wrap",
+        "justify_content": "center",
+        "align_items": "center",
+        "flex_gap": {"unit": "px", "size": 40}
+      },
+      "elements": [
+        {
+          "id": "trust-item-1",
+          "elType": "widget",
+          "widgetType": "icon-box",
+          "settings": {
+            "icon": {"value": "fas fa-star", "library": "fa-solid"},
+            "title_text": "4.9 Star Rating",
+            "description_text": "Based on 50+ verified reviews",
+            "icon_color": "#f59e0b",
+            "title_typography_typography": "custom",
+            "title_typography_font_weight": "600"
+          }
+        },
+        {
+          "id": "trust-item-2",
+          "elType": "widget",
+          "widgetType": "icon-box",
+          "settings": {
+            "icon": {"value": "fas fa-shield-alt", "library": "fa-solid"},
+            "title_text": "Fully Insured",
+            "description_text": "Public liability & professional indemnity",
+            "icon_color": "#10b981",
+            "title_typography_typography": "custom",
+            "title_typography_font_weight": "600"
+          }
+        },
+        {
+          "id": "trust-item-3",
+          "elType": "widget",
+          "widgetType": "icon-box",
+          "settings": {
+            "icon": {"value": "fas fa-clock", "library": "fa-solid"},
+            "title_text": "10+ Years Experience",
+            "description_text": "Trusted by hundreds of customers",
+            "icon_color": "#3b82f6",
+            "title_typography_typography": "custom",
+            "title_typography_font_weight": "600"
+          }
+        },
+        {
+          "id": "trust-item-4",
+          "elType": "widget",
+          "widgetType": "icon-box",
+          "settings": {
+            "icon": {"value": "fas fa-map-marker-alt", "library": "fa-solid"},
+            "title_text": "Local to {{LOCATION}}",
+            "description_text": "Fast response times guaranteed",
+            "icon_color": "#8b5cf6",
+            "title_typography_typography": "custom",
+            "title_typography_font_weight": "600"
+          }
+        }
+      ]
+    }
+  ]
+}

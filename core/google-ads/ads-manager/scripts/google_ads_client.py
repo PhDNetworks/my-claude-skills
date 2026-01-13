@@ -9,33 +9,81 @@ import os
 from google.ads.googleads.client import GoogleAdsClient
 from google.ads.googleads.errors import GoogleAdsException
 
-# Default credentials - can be overridden via environment variables or config file
-DEFAULT_CONFIG = {
-    "developer_token": os.environ.get("GOOGLE_ADS_DEVELOPER_TOKEN", "QEbSx8y0DWbQPKeR635KDg"),
-    "client_id": os.environ.get("GOOGLE_ADS_CLIENT_ID", "1093467682273-mbbq6mpeoegnnehnisahv3mcouqgoemg.apps.googleusercontent.com"),
-    "client_secret": os.environ.get("GOOGLE_ADS_CLIENT_SECRET", "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"),
-    "refresh_token": os.environ.get("GOOGLE_ADS_REFRESH_TOKEN", ""),  # Must be generated
-    "login_customer_id": os.environ.get("GOOGLE_ADS_LOGIN_CUSTOMER_ID", "4906637401"),  # MCC ID without dashes
-    "use_proto_plus": True
-}
+# Configuration loading - from file or environment variables
+# Config file path: ../../../google-ads-config.json (relative to repo root)
+CONFIG_FILE_PATHS = [
+    os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'google-ads-config.json'),
+    os.path.expanduser('~/google-ads-config.json'),
+    '/etc/google-ads-config.json'
+]
+
+def load_config() -> dict:
+    """Load config from file or environment variables."""
+    # Try config files first
+    for path in CONFIG_FILE_PATHS:
+        if os.path.exists(path):
+            with open(path) as f:
+                return json.load(f)
+
+    # Fall back to environment variables
+    required_vars = ['GOOGLE_ADS_DEVELOPER_TOKEN', 'GOOGLE_ADS_CLIENT_ID',
+                     'GOOGLE_ADS_CLIENT_SECRET', 'GOOGLE_ADS_REFRESH_TOKEN']
+
+    if all(os.environ.get(var) for var in required_vars):
+        return {
+            "developer_token": os.environ.get("GOOGLE_ADS_DEVELOPER_TOKEN"),
+            "client_id": os.environ.get("GOOGLE_ADS_CLIENT_ID"),
+            "client_secret": os.environ.get("GOOGLE_ADS_CLIENT_SECRET"),
+            "refresh_token": os.environ.get("GOOGLE_ADS_REFRESH_TOKEN"),
+            "login_customer_id": os.environ.get("GOOGLE_ADS_LOGIN_CUSTOMER_ID", "4906637401"),
+            "use_proto_plus": True
+        }
+
+    raise FileNotFoundError(
+        "Google Ads config not found. Create google-ads-config.json or set environment variables.\n"
+        f"Searched paths: {CONFIG_FILE_PATHS}"
+    )
+
+# Lazy-load config when needed
+DEFAULT_CONFIG = None
 
 
 def get_client(config: dict = None) -> GoogleAdsClient:
     """Initialize and return a Google Ads API client."""
-    cfg = config or DEFAULT_CONFIG
-    return GoogleAdsClient.load_from_dict(cfg)
+    global DEFAULT_CONFIG
+    if config is None:
+        if DEFAULT_CONFIG is None:
+            DEFAULT_CONFIG = load_config()
+        config = DEFAULT_CONFIG
+    return GoogleAdsClient.load_from_dict(config)
 
 
 def get_accessible_accounts(client: GoogleAdsClient, mcc_id: str = "4906637401") -> list:
-    """Get all accessible customer accounts under the MCC."""
-    customer_service = client.get_service("CustomerService")
-    accessible_customers = customer_service.list_accessible_customers()
-    
+    """Get all ENABLED client accounts under the MCC (excludes manager accounts)."""
+    ga_service = client.get_service("GoogleAdsService")
+
+    query = """
+        SELECT
+            customer_client.id,
+            customer_client.descriptive_name,
+            customer_client.status,
+            customer_client.manager
+        FROM customer_client
+        WHERE customer_client.status = 'ENABLED'
+            AND customer_client.manager = FALSE
+    """
+
     accounts = []
-    for resource_name in accessible_customers.resource_names:
-        customer_id = resource_name.split('/')[-1]
-        accounts.append(customer_id)
-    
+    try:
+        response = ga_service.search(customer_id=mcc_id, query=query)
+        for row in response:
+            accounts.append({
+                "id": str(row.customer_client.id),
+                "name": row.customer_client.descriptive_name
+            })
+    except GoogleAdsException as ex:
+        print(f"Error fetching client accounts: {ex}")
+
     return accounts
 
 
@@ -196,6 +244,221 @@ def get_search_terms_report(client: GoogleAdsClient, customer_id: str, days: int
         print(f"Error fetching search terms for {customer_id}: {ex}")
     
     return search_terms
+
+
+# =============================================================================
+# BUDGET MANAGEMENT FUNCTIONS
+# =============================================================================
+
+def get_campaign_budgets(client: GoogleAdsClient, customer_id: str, enabled_only: bool = False) -> list:
+    """
+    Get current budget settings for campaigns.
+
+    Args:
+        client: Google Ads API client
+        customer_id: Customer ID (without dashes)
+        enabled_only: If True, only return ENABLED campaigns (recommended for budget updates)
+    """
+    ga_service = client.get_service("GoogleAdsService")
+
+    # Filter by ENABLED status if requested (important for budget updates)
+    status_filter = "campaign.status = 'ENABLED'" if enabled_only else "campaign.status != 'REMOVED'"
+
+    query = f"""
+        SELECT
+            campaign.id,
+            campaign.name,
+            campaign.status,
+            campaign_budget.id,
+            campaign_budget.name,
+            campaign_budget.amount_micros,
+            campaign_budget.resource_name,
+            campaign_budget.delivery_method,
+            campaign_budget.status
+        FROM campaign
+        WHERE {status_filter}
+    """
+
+    budgets = []
+    try:
+        response = ga_service.search(customer_id=customer_id, query=query)
+        for row in response:
+            budgets.append({
+                "campaign_id": row.campaign.id,
+                "campaign_name": row.campaign.name,
+                "campaign_status": row.campaign.status.name,
+                "budget_id": row.campaign_budget.id,
+                "budget_name": row.campaign_budget.name,
+                "daily_budget": row.campaign_budget.amount_micros / 1_000_000,
+                "daily_budget_micros": row.campaign_budget.amount_micros,
+                "resource_name": row.campaign_budget.resource_name,
+                "delivery_method": row.campaign_budget.delivery_method.name,
+                "budget_status": row.campaign_budget.status.name
+            })
+    except GoogleAdsException as ex:
+        print(f"Error fetching budgets for {customer_id}: {ex}")
+
+    return budgets
+
+
+def update_campaign_budget(client: GoogleAdsClient, customer_id: str,
+                          budget_resource_name: str, new_amount_micros: int) -> dict:
+    """
+    Update a campaign budget amount.
+
+    Args:
+        client: Google Ads API client
+        customer_id: Customer ID (without dashes)
+        budget_resource_name: Full resource name (customers/{id}/campaignBudgets/{budget_id})
+        new_amount_micros: New daily budget in microcurrency (e.g., £8.00 = 8000000)
+
+    Returns:
+        dict with success status and details
+    """
+    from google.protobuf import field_mask_pb2
+
+    campaign_budget_service = client.get_service("CampaignBudgetService")
+
+    operation = client.get_type("CampaignBudgetOperation")
+    budget = operation.update
+    budget.resource_name = budget_resource_name
+    budget.amount_micros = new_amount_micros
+
+    operation.update_mask.CopyFrom(field_mask_pb2.FieldMask(paths=["amount_micros"]))
+
+    try:
+        response = campaign_budget_service.mutate_campaign_budgets(
+            customer_id=customer_id,
+            operations=[operation]
+        )
+        return {
+            "success": True,
+            "resource_name": response.results[0].resource_name,
+            "new_amount": new_amount_micros / 1_000_000
+        }
+    except GoogleAdsException as ex:
+        return {
+            "success": False,
+            "error": str(ex)
+        }
+
+
+def pause_campaign(client: GoogleAdsClient, customer_id: str, campaign_id: int) -> dict:
+    """Pause a single campaign."""
+    from google.protobuf import field_mask_pb2
+
+    campaign_service = client.get_service("CampaignService")
+
+    operation = client.get_type("CampaignOperation")
+    campaign = operation.update
+    campaign.resource_name = f"customers/{customer_id}/campaigns/{campaign_id}"
+    campaign.status = client.enums.CampaignStatusEnum.PAUSED
+
+    operation.update_mask.CopyFrom(field_mask_pb2.FieldMask(paths=["status"]))
+
+    try:
+        response = campaign_service.mutate_campaigns(
+            customer_id=customer_id,
+            operations=[operation]
+        )
+        return {"success": True, "campaign_id": campaign_id, "status": "PAUSED"}
+    except GoogleAdsException as ex:
+        return {"success": False, "campaign_id": campaign_id, "error": str(ex)}
+
+
+def enable_campaign(client: GoogleAdsClient, customer_id: str, campaign_id: int) -> dict:
+    """Enable (un-pause) a single campaign."""
+    from google.protobuf import field_mask_pb2
+
+    campaign_service = client.get_service("CampaignService")
+
+    operation = client.get_type("CampaignOperation")
+    campaign = operation.update
+    campaign.resource_name = f"customers/{customer_id}/campaigns/{campaign_id}"
+    campaign.status = client.enums.CampaignStatusEnum.ENABLED
+
+    operation.update_mask.CopyFrom(field_mask_pb2.FieldMask(paths=["status"]))
+
+    try:
+        response = campaign_service.mutate_campaigns(
+            customer_id=customer_id,
+            operations=[operation]
+        )
+        return {"success": True, "campaign_id": campaign_id, "status": "ENABLED"}
+    except GoogleAdsException as ex:
+        return {"success": False, "campaign_id": campaign_id, "error": str(ex)}
+
+
+def pause_all_campaigns(client: GoogleAdsClient, customer_id: str) -> list:
+    """Pause all ENABLED campaigns for an account. Returns list of results."""
+    budgets = get_campaign_budgets(client, customer_id)
+    results = []
+
+    for b in budgets:
+        if b["campaign_status"] == "ENABLED":
+            result = pause_campaign(client, customer_id, b["campaign_id"])
+            result["campaign_name"] = b["campaign_name"]
+            results.append(result)
+
+    return results
+
+
+def enable_all_campaigns(client: GoogleAdsClient, customer_id: str, campaign_ids: list = None) -> list:
+    """
+    Enable campaigns for an account.
+
+    Args:
+        client: Google Ads API client
+        customer_id: Customer ID
+        campaign_ids: Optional list of specific campaign IDs to enable.
+                     If None, enables all PAUSED campaigns.
+    """
+    results = []
+
+    if campaign_ids is None:
+        # Get all paused campaigns
+        budgets = get_campaign_budgets(client, customer_id)
+        campaign_ids = [b["campaign_id"] for b in budgets if b["campaign_status"] == "PAUSED"]
+
+    for campaign_id in campaign_ids:
+        result = enable_campaign(client, customer_id, campaign_id)
+        results.append(result)
+
+    return results
+
+
+def get_account_spend_for_period(client: GoogleAdsClient, customer_id: str,
+                                  start_date: str, end_date: str) -> float:
+    """
+    Get total spend for an account between two dates.
+
+    Args:
+        client: Google Ads API client
+        customer_id: Customer ID
+        start_date: Start date in YYYY-MM-DD format
+        end_date: End date in YYYY-MM-DD format
+
+    Returns:
+        Total spend in currency (not micros)
+    """
+    ga_service = client.get_service("GoogleAdsService")
+
+    query = f"""
+        SELECT
+            metrics.cost_micros
+        FROM customer
+        WHERE segments.date BETWEEN '{start_date}' AND '{end_date}'
+    """
+
+    total_micros = 0
+    try:
+        response = ga_service.search(customer_id=customer_id, query=query)
+        for row in response:
+            total_micros += row.metrics.cost_micros
+    except GoogleAdsException as ex:
+        print(f"Error fetching spend for {customer_id}: {ex}")
+
+    return total_micros / 1_000_000
 
 
 if __name__ == "__main__":

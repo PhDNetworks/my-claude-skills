@@ -1,0 +1,101 @@
+{
+  "autonomy_level": "FULL",
+  "human_approval_required": ["INCREASE_BUDGET", "ADD_FUNDS"],
+
+  "auto_execute": {
+    "pause_keywords": true,
+    "enable_keywords": true,
+    "pause_ads": true,
+    "enable_ads": true,
+    "pause_campaigns": true,
+    "enable_campaigns": true,
+    "adjust_bids": true,
+    "add_negative_keywords": true,
+    "change_match_types": true,
+    "create_keywords_from_search_terms": true,
+    "fix_conversion_tracking": true,
+    "update_landing_pages": true,
+    "restructure_ad_groups": true
+  },
+
+  "guardrails": {
+    "max_bid_amount_gbp": 10.00,
+    "max_bid_increase_pct": 50,
+    "max_bid_decrease_pct": 70,
+    "never_delete_only_pause": true,
+    "min_data_before_decisions": {
+      "clicks": 10,
+      "impressions": 100,
+      "days": 7
+    },
+    "protected_patterns": [
+      "dentist", "dental", "roofing", "roofer", "roof",
+      "rendering", "render", "hygiene", "cleaning",
+      "electrician", "electrical", "plumber", "plumbing"
+    ]
+  },
+
+  "optimization_rules": {
+    "pause_keyword_if": {
+      "spend_gbp": 30,
+      "conversions": 0,
+      "clicks_min": 15
+    },
+    "reduce_bid_if": {
+      "cpa_above_target_by_percent": 50,
+      "quality_score_below": 4,
+      "spend_with_no_conversion_gbp": 20
+    },
+    "increase_bid_if": {
+      "conversion_rate_above_average_by_percent": 50,
+      "impression_share_below": 70,
+      "quality_score_above": 7
+    },
+    "add_as_negative_if": {
+      "search_term_spend_gbp": 15,
+      "conversions": 0,
+      "clicks_min": 10,
+      "not_contains_protected_pattern": true
+    },
+    "add_as_keyword_if": {
+      "search_term_conversions_min": 1,
+      "or_clicks_min": 5,
+      "and_ctr_above": 3.0
+    }
+  },
+
+  "conversion_tracking": {
+    "auto_fix": true,
+    "optimal_settings": {
+      "conversion_window_days": 30,
+      "counting_type": "ONE",
+      "attribution_model": "DATA_DRIVEN"
+    }
+  },
+
+  "accounts": {
+    "5481658097": {
+      "name": "JLR Smith Roofing - Leeds",
+      "enabled": true,
+      "monthly_budget_gbp": 250
+    },
+    "6109184488": {
+      "name": "Leeds Rendering",
+      "enabled": true,
+      "monthly_budget_gbp": 250
+    },
+    "1176290317": {
+      "name": "Ossett Dental Care",
+      "enabled": true,
+      "monthly_budget_gbp": 250
+    }
+  },
+
+  "notifications": {
+    "email": "daniel.doherty@phdnetworks.co.uk",
+    "daily_summary": true,
+    "immediate_alerts": ["BUDGET_EXHAUSTED", "BUDGET_INCREASE_NEEDED", "CONVERSION_TRACKING_BROKEN"],
+    "notify_after_actions": true,
+    "ask_before_actions": false
+  }
+}

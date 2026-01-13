@@ -25,3 +25,37 @@ venv/
 
 # Logs
 *.log
+
+# ===== SECRETS - NEVER COMMIT =====
+# Google Ads credentials
+google-ads-config.json
+**/google-ads-config.json
+client_secret*.json
+**/client_secret*.json
+
+# SSH private keys
+**/*.pem
+**/id_rsa
+**/id_ed25519
+
+# Secret folders
+**/_secret/
+**/_secrets/
+
+# ===== DATA FILES (Generated) =====
+# Rollback files (contain account data)
+**/rollback_*.json
+
+# Report outputs
+**/url_update_report_*.json
+**/keyword_fix_log_*.json
+**/*_report_*.json
+**/*_report_*.md
+
+# Data directories (generated content)
+**/data/*.json
+**/data/*.txt
+**/data/*.md
+**/logs/*.json
+**/logs/*.txt
+**/logs/*.md

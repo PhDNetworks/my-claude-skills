@@ -1,0 +1,119 @@
+{
+  "site_id": "leeds_rendering",
+  "business_name": "Pro-Reno Leeds",
+  "domain": "https://leedsrendering.co.uk",
+  "status": "ACTIVE",
+
+  "ssh": {
+    "host": "185.199.220.41",
+    "port": 722,
+    "user": "leedsrenderingco",
+    "key_path": "~/.ssh/id_ed25519"
+  },
+
+  "wordpress": {
+    "path": "/home/leedsrenderingco/public_html",
+    "version": "6.9",
+    "theme": "Astra",
+    "theme_version": "4.8.7",
+    "elementor_version": "3.34.1",
+    "elementor_pro_version": "3.32.2"
+  },
+
+  "contact": {
+    "phone_primary": "0113 217 6287",
+    "phone_mobile": "07472 610 608",
+    "email": "info@leedsrendering.co.uk",
+    "address": {
+      "city": "Leeds",
+      "county": "West Yorkshire"
+    }
+  },
+
+  "brand": {
+    "primary_color": "#2563eb",
+    "secondary_color": "#1e3a5f",
+    "accent_color": "#10b981",
+    "font_family": "Inter, system-ui, sans-serif"
+  },
+
+  "services": [
+    {
+      "name": "External Rendering",
+      "slug": "external-rendering",
+      "icon": "fas fa-paint-roller",
+      "description": "Professional external wall rendering services"
+    },
+    {
+      "name": "K-Rend Systems",
+      "slug": "k-rend",
+      "icon": "fas fa-shield-alt",
+      "description": "K-Rend silicone render installation"
+    },
+    {
+      "name": "Plastering",
+      "slug": "plastering",
+      "icon": "fas fa-trowel",
+      "description": "Interior and exterior plastering"
+    },
+    {
+      "name": "Fascia & Soffits",
+      "slug": "fascia-soffits",
+      "icon": "fas fa-home",
+      "description": "uPVC fascia and soffit installation"
+    }
+  ],
+
+  "trust_signals": {
+    "years_experience": 10,
+    "rating": 4.8,
+    "review_count": 30,
+    "insurance": "Fully Insured",
+    "accreditations": []
+  },
+
+  "service_areas": [
+    "Leeds",
+    "Bradford",
+    "Wakefield",
+    "Harrogate",
+    "York"
+  ],
+
+  "tracking": {
+    "ga4_measurement_id": "G-5EDK2QNJJK",
+    "google_ads_id": "AW-6109184488",
+    "google_ads_conversion_label": "",
+    "phone_conversion_label": ""
+  },
+
+  "google_ads": {
+    "customer_id": "6109184488",
+    "monthly_budget": 240,
+    "campaign_ids": []
+  },
+
+  "landing_pages": [
+    {
+      "keyword": "rendering leeds",
+      "slug": "rendering-leeds",
+      "h1": "Professional Rendering Services in Leeds",
+      "status": "deployed",
+      "wp_page_id": 1919,
+      "url": "https://leedsrendering.co.uk/rendering-leeds/",
+      "deployed_at": "2026-01-13"
+    },
+    {
+      "keyword": "k-rend leeds",
+      "slug": "k-rend-leeds",
+      "h1": "K-Rend Specialists in Leeds",
+      "status": "deployed",
+      "wp_page_id": 1920,
+      "url": "https://leedsrendering.co.uk/k-rend-leeds/",
+      "deployed_at": "2026-01-13"
+    }
+  ],
+
+  "discovered": "2026-01-13",
+  "last_updated": "2026-01-13"
+}

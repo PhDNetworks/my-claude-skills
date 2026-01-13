@@ -1,0 +1,73 @@
+{
+  "site_id": "example_site",
+  "business_name": "Example Business Name",
+  "domain": "https://example.com",
+  "status": "ACTIVE",
+
+  "ssh": {
+    "host": "YOUR_SERVER_IP",
+    "port": 22,
+    "user": "ssh_username",
+    "key_path": "~/.ssh/id_ed25519"
+  },
+
+  "wordpress": {
+    "path": "/home/username/public_html",
+    "version": "6.x",
+    "theme": "Astra",
+    "theme_version": "4.x",
+    "elementor_version": "3.x",
+    "elementor_pro_version": null
+  },
+
+  "contact": {
+    "phone_primary": "0123 456 7890",
+    "phone_mobile": "07xxx xxx xxx",
+    "email": "info@example.com",
+    "address": {
+      "city": "Leeds",
+      "county": "West Yorkshire"
+    }
+  },
+
+  "brand": {
+    "primary_color": "#2563eb",
+    "secondary_color": "#1e3a5f",
+    "accent_color": "#10b981",
+    "font_family": "Inter, system-ui, sans-serif"
+  },
+
+  "services": [
+    {
+      "name": "Service Name",
+      "slug": "service-name",
+      "icon": "fas fa-tools",
+      "description": "Service description"
+    }
+  ],
+
+  "trust_signals": {
+    "years_experience": 10,
+    "rating": 4.8,
+    "review_count": 50,
+    "insurance": "Fully Insured",
+    "accreditations": []
+  },
+
+  "service_areas": ["Leeds", "Bradford", "Wakefield"],
+
+  "tracking": {
+    "ga4_measurement_id": "G-XXXXXXXXXX",
+    "google_ads_id": "AW-XXXXXXXXXX",
+    "google_ads_conversion_label": "",
+    "phone_conversion_label": ""
+  },
+
+  "google_ads": {
+    "customer_id": "XXXXXXXXXX",
+    "monthly_budget": 250,
+    "campaign_ids": []
+  },
+
+  "landing_pages": []
+}

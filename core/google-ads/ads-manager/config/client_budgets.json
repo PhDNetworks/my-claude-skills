@@ -1,0 +1,31 @@
+{
+  "5481658097": {
+    "name": "JLR Smith Roofing",
+    "monthly_budget": 250,
+    "currency": "GBP",
+    "cycle_start": "2025-12-08",
+    "cycle_days": 31,
+    "auto_pause": false,
+    "status": "GOODWILL",
+    "note": "Cycle ended, running on goodwill until payment chased"
+  },
+  "6109184488": {
+    "name": "Leeds Rendering",
+    "monthly_budget": 250,
+    "currency": "GBP",
+    "cycle_start": "2026-01-08",
+    "cycle_days": 31,
+    "auto_pause": true,
+    "status": "ACTIVE"
+  },
+  "1176290317": {
+    "name": "Ossett Dental Care",
+    "monthly_budget": 250,
+    "currency": "GBP",
+    "cycle_start": "2025-01-01",
+    "cycle_days": null,
+    "auto_pause": true,
+    "status": "ACTIVE",
+    "note": "One-off budget until exhausted"
+  }
+}

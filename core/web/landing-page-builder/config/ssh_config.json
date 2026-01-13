@@ -1,0 +1,23 @@
+{
+  "default_server": {
+    "host": "185.199.220.41",
+    "port": 722,
+    "key_path": "~/.ssh/id_ed25519",
+    "timeout": 30
+  },
+  "sites": {
+    "leeds_rendering": {
+      "config_file": "site_configs/leeds_rendering.json",
+      "ssh_user": "leedsrenderingco",
+      "wp_path": "/home/leedsrenderingco/public_html"
+    },
+    "jlr_smith_roofing": {
+      "config_file": "site_configs/jlr_smith_roofing.json",
+      "ssh_user": "jlrsmithco",
+      "wp_path": "/home/jlrsmithco/public_html"
+    }
+  },
+  "wp_cli_path": "wp",
+  "status": "ACTIVE",
+  "verified": "2026-01-13"
+}

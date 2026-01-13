@@ -1,0 +1,120 @@
+{
+  "site_id": "jlr_smith_roofing",
+  "business_name": "JLR Smith Roofing",
+  "domain": "https://jlrsmith.co.uk",
+  "status": "ACTIVE",
+
+  "ssh": {
+    "host": "185.199.220.41",
+    "port": 722,
+    "user": "jlrsmithco",
+    "key_path": "~/.ssh/id_ed25519"
+  },
+
+  "wordpress": {
+    "path": "/home/jlrsmithco/public_html",
+    "version": "6.9",
+    "theme": "Astra",
+    "theme_version": "4.11.12",
+    "elementor_version": "3.32.4",
+    "elementor_pro_version": null
+  },
+
+  "contact": {
+    "phone_primary": "07546 529630",
+    "phone_mobile": "07546 529630",
+    "email": "info@jlrsmith.co.uk",
+    "address": {
+      "city": "Leeds",
+      "county": "West Yorkshire"
+    }
+  },
+
+  "brand": {
+    "primary_color": "#2563eb",
+    "secondary_color": "#1e3a5f",
+    "accent_color": "#fbbf24",
+    "font_family": "Inter, system-ui, sans-serif"
+  },
+
+  "services": [
+    {
+      "name": "Roof Repairs",
+      "slug": "roof-repairs",
+      "icon": "fas fa-tools",
+      "description": "Professional roof repair services for all types of roofing"
+    },
+    {
+      "name": "New Roofs",
+      "slug": "new-roofs",
+      "icon": "fas fa-home",
+      "description": "Complete new roof installations with quality materials"
+    },
+    {
+      "name": "Flat Roofing",
+      "slug": "flat-roofing",
+      "icon": "fas fa-layer-group",
+      "description": "Specialist flat roof installation and repairs"
+    },
+    {
+      "name": "Guttering",
+      "slug": "guttering",
+      "icon": "fas fa-tint",
+      "description": "Gutter installation, repair and cleaning services"
+    }
+  ],
+
+  "trust_signals": {
+    "years_experience": 15,
+    "rating": 4.9,
+    "review_count": 50,
+    "insurance": "Fully Insured - Public Liability & Professional Indemnity",
+    "accreditations": ["Checkatrade", "TrustMark"]
+  },
+
+  "service_areas": [
+    "Leeds",
+    "Bradford",
+    "Wakefield",
+    "Huddersfield",
+    "Halifax",
+    "Dewsbury"
+  ],
+
+  "tracking": {
+    "ga4_measurement_id": "G-036D0M9YTZ",
+    "google_ads_id": "AW-5481658097",
+    "google_ads_conversion_label": "",
+    "phone_conversion_label": ""
+  },
+
+  "google_ads": {
+    "customer_id": "5481658097",
+    "monthly_budget": 250,
+    "campaign_ids": []
+  },
+
+  "landing_pages": [
+    {
+      "keyword": "roofers leeds",
+      "slug": "roofers-leeds",
+      "h1": "Expert Roofers in Leeds",
+      "status": "deployed",
+      "wp_page_id": 1455,
+      "url": "https://jlrsmith.co.uk/roofers-leeds/",
+      "deployed_at": "2026-01-13"
+    },
+    {
+      "keyword": "roof repairs leeds",
+      "slug": "roof-repairs-leeds",
+      "h1": "Professional Roof Repairs in Leeds",
+      "status": "deployed",
+      "wp_page_id": 1456,
+      "url": "https://jlrsmith.co.uk/roof-repairs-leeds/",
+      "deployed_at": "2026-01-13"
+    }
+  ],
+
+  "discovered": "2026-01-13",
+  "last_updated": "2026-01-13"
+}

@@ -24,11 +24,9 @@ from google_ads_client import (
 
 
 # Client accounts under PhD Networks MCC (490-663-7401)
-# Excludes the MCC itself and any test accounts
+# Only ENABLED client accounts (excludes MCC and draft/test accounts)
 CLIENT_ACCOUNTS = {
-    "6166823042": "Draft Account 1",
-    "7326980995": "Draft Account 2", 
-    "5481658097": "JLR Smith Roofing - Leeds",
+    "5481658097": "JLR Smith Roofing – Leeds",
     "6109184488": "Leeds Rendering",
     "1176290317": "Ossett Dental Care"
 }
@@ -102,11 +100,19 @@ def analyze_keyword(keyword: dict) -> list:
     return issues
 
 
-def get_all_client_data(client, days: int = 30) -> dict:
-    """Fetch performance data for all client accounts."""
+def get_all_client_data(client, days: int = 30, account_filter: str = None) -> dict:
+    """Fetch performance data for client accounts."""
     all_data = {}
-    
-    for customer_id, name in CLIENT_ACCOUNTS.items():
+
+    # Filter to single account if specified
+    accounts = CLIENT_ACCOUNTS
+    if account_filter:
+        if account_filter in CLIENT_ACCOUNTS:
+            accounts = {account_filter: CLIENT_ACCOUNTS[account_filter]}
+        else:
+            accounts = {account_filter: f"Account {account_filter}"}
+
+    for customer_id, name in accounts.items():
         print(f"  Fetching data for {name} ({customer_id})...")
         
         try:
@@ -241,6 +247,7 @@ def main():
     parser.add_argument("--days", type=int, default=30, help="Days of data to analyze")
     parser.add_argument("--output", choices=["json", "markdown"], default="markdown")
     parser.add_argument("--config", type=str, help="Path to config file")
+    parser.add_argument("--account", type=str, help="Single account ID to analyze")
     args = parser.parse_args()
     
     print("=" * 60)
@@ -269,7 +276,7 @@ def main():
     
     # Fetch all data
     print("Fetching account data...")
-    data = get_all_client_data(client, args.days)
+    data = get_all_client_data(client, args.days, args.account)
     
     # Generate analysis
     print("\nAnalyzing performance...")

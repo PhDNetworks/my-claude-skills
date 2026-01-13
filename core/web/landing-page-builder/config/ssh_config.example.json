@@ -1,0 +1,17 @@
+{
+  "default_server": {
+    "host": "YOUR_SERVER_IP",
+    "port": 22,
+    "key_path": "~/.ssh/id_ed25519",
+    "timeout": 30
+  },
+  "sites": {
+    "example_site": {
+      "config_file": "site_configs/example_site.json",
+      "ssh_user": "example_user",
+      "wp_path": "/home/example_user/public_html"
+    }
+  },
+  "wp_cli_path": "wp",
+  "status": "ACTIVE"
+}

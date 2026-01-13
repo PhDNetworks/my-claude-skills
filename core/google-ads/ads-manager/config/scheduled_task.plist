@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+    Google Ads Scheduled Monitor
+    PhD Networks & Systems Ltd
+
+    This launchd plist runs the Google Ads monitoring system daily at 8am.
+
+    Installation:
+    1. Copy this file to ~/Library/LaunchAgents/
+    2. Update the paths below to match your system
+    3. Load with: launchctl load ~/Library/LaunchAgents/com.phdnetworks.googleads-monitor.plist
+    4. Check status: launchctl list | grep googleads
+
+    Uninstall:
+    launchctl unload ~/Library/LaunchAgents/com.phdnetworks.googleads-monitor.plist
+    -->
+
+    <key>Label</key>
+    <string>com.phdnetworks.googleads-monitor</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <!-- Python 3 path - update if using different Python installation -->
+        <string>/usr/bin/python3</string>
+
+        <!-- Path to the run script -->
+        <string>/Users/phdnetworks/Documents/Developer/personal/my-claude-skills/core/google-ads/ads-manager/scripts/run_daily_monitor.sh</string>
+    </array>
+
+    <!-- Run daily at 8:00 AM -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>8</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Working directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/phdnetworks/Documents/Developer/personal/my-claude-skills/core/google-ads/ads-manager/scripts</string>
+
+    <!-- Log output -->
+    <key>StandardOutPath</key>
+    <string>/Users/phdnetworks/Documents/Developer/personal/my-claude-skills/core/google-ads/ads-manager/logs/monitor_stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/phdnetworks/Documents/Developer/personal/my-claude-skills/core/google-ads/ads-manager/logs/monitor_stderr.log</string>
+
+    <!-- Run even if machine was asleep at scheduled time -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <!-- Keep the job active -->
+    <key>KeepAlive</key>
+    <false/>
+
+    <!-- Environment variables -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- Add SMTP credentials here if using email alerts -->
+        <!-- <key>SMTP_USERNAME</key>
+        <string>your-email@gmail.com</string>
+        <key>SMTP_PASSWORD</key>
+        <string>your-app-password</string> -->
+    </dict>
+</dict>
+</plist>

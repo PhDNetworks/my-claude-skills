@@ -1,0 +1,331 @@
+#!/usr/bin/env python3
+"""
+Google Ads Alert System
+
+Sends email alerts and/or Make.com webhook payloads when issues are detected.
+
+Features:
+- SMTP email alerts
+- Make.com webhook integration
+- Configurable alert thresholds
+- HTML email formatting
+
+Usage:
+    python3 alert_system.py --webhook-url https://hook.eu2.make.com/xxx
+    python3 alert_system.py --email daniel.doherty@phdnetworks.co.uk
+    python3 alert_system.py --webhook-url https://... --email daniel@...
+"""
+
+import os
+import json
+import argparse
+import smtplib
+import requests
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+from pathlib import Path
+
+# Default configuration
+DEFAULT_EMAIL_RECIPIENT = "daniel.doherty@phdnetworks.co.uk"
+DEFAULT_EMAIL_SENDER = "alerts@phdnetworks.co.uk"
+
+# SMTP configuration (override via environment variables)
+SMTP_CONFIG = {
+    "host": os.environ.get("SMTP_HOST", "smtp.gmail.com"),
+    "port": int(os.environ.get("SMTP_PORT", "587")),
+    "username": os.environ.get("SMTP_USERNAME", ""),
+    "password": os.environ.get("SMTP_PASSWORD", ""),
+    "use_tls": os.environ.get("SMTP_USE_TLS", "true").lower() == "true"
+}
+
+
+def format_email_html(webhook_payload: dict) -> str:
+    """Format the alert as HTML email."""
+    summary = webhook_payload["summary"]
+    issues = webhook_payload["issues"]
+
+    # Determine alert level
+    if summary["high_priority_issues"] > 0:
+        alert_level = "🔴 HIGH PRIORITY"
+        header_color = "#dc3545"
+    elif summary["medium_priority_issues"] > 0:
+        alert_level = "🟡 MEDIUM PRIORITY"
+        header_color = "#ffc107"
+    else:
+        alert_level = "✅ ALL CLEAR"
+        header_color = "#28a745"
+
+    html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+            .header {{ background-color: {header_color}; color: white; padding: 20px; text-align: center; }}
+            .content {{ padding: 20px; }}
+            .summary {{ background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0; }}
+            .issue {{ border-left: 4px solid {header_color}; padding: 10px; margin: 10px 0; background: #fff; }}
+            .issue-high {{ border-left-color: #dc3545; }}
+            .issue-medium {{ border-left-color: #ffc107; }}
+            .account {{ font-weight: bold; color: #666; }}
+            table {{ width: 100%; border-collapse: collapse; margin: 15px 0; }}
+            th, td {{ padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }}
+            th {{ background-color: #f8f9fa; }}
+            .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>{alert_level}</h1>
+            <p>Google Ads Daily Monitoring Report</p>
+            <p style="font-size: 12px;">{webhook_payload['timestamp']}</p>
+        </div>
+
+        <div class="content">
+            <div class="summary">
+                <h2>📊 Summary</h2>
+                <table>
+                    <tr><th>Metric</th><th>Value</th></tr>
+                    <tr><td>Accounts Monitored</td><td>{summary['total_accounts']}</td></tr>
+                    <tr><td>Total Spend (1 day)</td><td>£{summary['total_spend']:.2f}</td></tr>
+                    <tr><td>Total Conversions</td><td>{summary['total_conversions']}</td></tr>
+                    <tr><td>High Priority Issues</td><td style="color: #dc3545; font-weight: bold;">{summary['high_priority_issues']}</td></tr>
+                    <tr><td>Medium Priority Issues</td><td style="color: #ffc107; font-weight: bold;">{summary['medium_priority_issues']}</td></tr>
+                </table>
+            </div>
+    """
+
+    # Account breakdown
+    html += """
+            <h2>📋 Account Breakdown</h2>
+            <table>
+                <tr><th>Account</th><th>Spend</th><th>Conversions</th><th>Issues</th></tr>
+    """
+
+    for account_id, account in webhook_payload["accounts"].items():
+        html += f"""
+                <tr>
+                    <td>{account['name']}</td>
+                    <td>£{account['spend']:.2f}</td>
+                    <td>{account['conversions']}</td>
+                    <td>{account['issue_count']}</td>
+                </tr>
+        """
+
+    html += "</table>"
+
+    # Issues list
+    if issues:
+        html += "<h2>⚠️ Issues Detected</h2>"
+
+        for issue in issues:
+            severity_class = "issue-high" if issue["severity"] == "high" else "issue-medium"
+            severity_emoji = "🔴" if issue["severity"] == "high" else "🟡"
+
+            html += f"""
+            <div class="issue {severity_class}">
+                <span class="account">[{issue['account_name']}]</span>
+                <p>{severity_emoji} <strong>{issue['type']}</strong>: {issue['message']}</p>
+            </div>
+            """
+
+    html += """
+            <div class="footer">
+                <p>Generated by PhD Networks Google Ads Automation System</p>
+                <p>This is an automated alert. Do not reply to this email.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+
+    return html
+
+
+def format_email_plain(webhook_payload: dict) -> str:
+    """Format the alert as plain text email."""
+    summary = webhook_payload["summary"]
+    issues = webhook_payload["issues"]
+
+    text = f"""
+GOOGLE ADS DAILY MONITORING REPORT
+==================================
+Generated: {webhook_payload['timestamp']}
+
+SUMMARY
+-------
+Accounts Monitored: {summary['total_accounts']}
+Total Spend (1 day): £{summary['total_spend']:.2f}
+Total Conversions: {summary['total_conversions']}
+High Priority Issues: {summary['high_priority_issues']}
+Medium Priority Issues: {summary['medium_priority_issues']}
+
+ACCOUNT BREAKDOWN
+-----------------
+"""
+
+    for account_id, account in webhook_payload["accounts"].items():
+        text += f"• {account['name']}: £{account['spend']:.2f} spend, {account['conversions']} conversions, {account['issue_count']} issues\n"
+
+    if issues:
+        text += "\nISSUES DETECTED\n---------------\n"
+        for issue in issues:
+            severity = "HIGH" if issue["severity"] == "high" else "MEDIUM"
+            text += f"[{severity}] [{issue['account_name']}] {issue['type']}: {issue['message']}\n"
+
+    text += """
+---
+Generated by PhD Networks Google Ads Automation System
+"""
+
+    return text
+
+
+def send_email(webhook_payload: dict, recipient: str, sender: str = DEFAULT_EMAIL_SENDER) -> bool:
+    """Send email alert via SMTP."""
+    if not SMTP_CONFIG["username"] or not SMTP_CONFIG["password"]:
+        print("⚠️ SMTP credentials not configured. Set SMTP_USERNAME and SMTP_PASSWORD environment variables.")
+        print("   Generating email content for manual sending...")
+
+        # Save email content to file instead
+        email_file = f"email_alert_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        with open(email_file, "w") as f:
+            f.write(format_email_html(webhook_payload))
+        print(f"   📁 Email content saved to: {email_file}")
+        return False
+
+    try:
+        # Create message
+        msg = MIMEMultipart("alternative")
+        msg["Subject"] = f"Google Ads Alert: {webhook_payload['summary']['high_priority_issues']} high priority issues"
+        msg["From"] = sender
+        msg["To"] = recipient
+
+        # Attach plain text and HTML versions
+        msg.attach(MIMEText(format_email_plain(webhook_payload), "plain"))
+        msg.attach(MIMEText(format_email_html(webhook_payload), "html"))
+
+        # Send email
+        with smtplib.SMTP(SMTP_CONFIG["host"], SMTP_CONFIG["port"]) as server:
+            if SMTP_CONFIG["use_tls"]:
+                server.starttls()
+            server.login(SMTP_CONFIG["username"], SMTP_CONFIG["password"])
+            server.sendmail(sender, recipient, msg.as_string())
+
+        print(f"✅ Email sent to {recipient}")
+        return True
+
+    except Exception as e:
+        print(f"❌ Error sending email: {e}")
+        return False
+
+
+def send_webhook(webhook_payload: dict, webhook_url: str) -> bool:
+    """Send alert to Make.com webhook."""
+    try:
+        response = requests.post(
+            webhook_url,
+            json=webhook_payload,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
+
+        if response.status_code == 200:
+            print(f"✅ Webhook sent successfully")
+            return True
+        else:
+            print(f"⚠️ Webhook returned status {response.status_code}")
+            return False
+
+    except Exception as e:
+        print(f"❌ Error sending webhook: {e}")
+        return False
+
+
+def load_latest_webhook_payload(output_dir: str = ".") -> dict:
+    """Load the most recent webhook payload file."""
+    output_path = Path(output_dir)
+    webhook_files = sorted(output_path.glob("webhook_*.json"), reverse=True)
+
+    if webhook_files:
+        with open(webhook_files[0]) as f:
+            return json.load(f)
+
+    return None
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Google Ads Alert System")
+    parser.add_argument("--webhook-url", type=str, help="Make.com webhook URL")
+    parser.add_argument("--email", type=str, default=DEFAULT_EMAIL_RECIPIENT, help="Email recipient")
+    parser.add_argument("--input-file", type=str, help="Webhook payload JSON file (optional, uses latest if not specified)")
+    parser.add_argument("--output-dir", type=str, default=".", help="Directory to look for webhook payloads")
+    parser.add_argument("--dry-run", action="store_true", help="Don't actually send, just show what would be sent")
+    args = parser.parse_args()
+
+    print()
+    print("=" * 70)
+    print("GOOGLE ADS ALERT SYSTEM")
+    print(f"Timestamp: {datetime.now().isoformat()}")
+    print("=" * 70)
+    print()
+
+    # Load webhook payload
+    if args.input_file:
+        with open(args.input_file) as f:
+            payload = json.load(f)
+    else:
+        payload = load_latest_webhook_payload(args.output_dir)
+
+    if not payload:
+        print("❌ No webhook payload found. Run scheduled_monitor.py first.")
+        return
+
+    print(f"📊 Loaded payload from: {payload['timestamp']}")
+    print(f"   High priority issues: {payload['summary']['high_priority_issues']}")
+    print(f"   Medium priority issues: {payload['summary']['medium_priority_issues']}")
+    print()
+
+    # Check if alerts are needed
+    if not payload["requires_action"] and payload["summary"]["medium_priority_issues"] == 0:
+        print("✅ No issues detected. No alerts needed.")
+        return
+
+    # Send alerts
+    if args.dry_run:
+        print("🔍 DRY RUN - Would send the following alerts:")
+        if args.webhook_url:
+            print(f"   • Webhook to: {args.webhook_url}")
+        print(f"   • Email to: {args.email}")
+        print()
+        print("Email subject: Google Ads Alert: {} high priority issues".format(payload['summary']['high_priority_issues']))
+        print()
+        print("Issues:")
+        for issue in payload["issues"]:
+            print(f"   [{issue['severity'].upper()}] {issue['account_name']}: {issue['message']}")
+        return
+
+    results = {"webhook": None, "email": None}
+
+    if args.webhook_url:
+        print(f"📤 Sending webhook to Make.com...")
+        results["webhook"] = send_webhook(payload, args.webhook_url)
+
+    print(f"📧 Sending email to {args.email}...")
+    results["email"] = send_email(payload, args.email)
+
+    print()
+    print("=" * 70)
+    print("ALERT SUMMARY")
+    print("=" * 70)
+    if results["webhook"] is not None:
+        status = "✅ Sent" if results["webhook"] else "❌ Failed"
+        print(f"Webhook: {status}")
+    status = "✅ Sent" if results["email"] else "⚠️ Saved to file (SMTP not configured)"
+    print(f"Email: {status}")
+    print("=" * 70)
+
+
+if __name__ == "__main__":
+    main()
