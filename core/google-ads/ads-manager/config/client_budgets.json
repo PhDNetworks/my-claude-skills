@@ -3,11 +3,11 @@
     "name": "JLR Smith Roofing",
     "monthly_budget": 250,
     "currency": "GBP",
-    "cycle_start": "2025-12-08",
-    "cycle_days": 31,
+    "cycle_start": "2026-01-14",
+    "cycle_days": 7,
     "auto_pause": false,
-    "status": "GOODWILL",
-    "note": "Cycle ended, running on goodwill until payment chased"
+    "status": "OWNER_FUNDED",
+    "note": "2026-01-14: PhD Networks covering costs for 1 week due to poor performance (0 leads generated). Goal: fix issues, generate leads, convince client to reinvest. Review on 2026-01-21."
   },
   "6109184488": {
     "name": "Leeds Rendering",
