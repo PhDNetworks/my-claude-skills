@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark-luxury">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Premium Dark Luxury Theme - PhD Networks Forge">
+  <title>Dark Luxury | PhD Networks Forge</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       FORGE THEME: Dark Luxury
+       Premium, authoritative, sophisticated
+       ============================================ */
+
+    :root,
+    [data-theme="dark-luxury"] {
+      /* Backgrounds */
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #111111;
+      --bg-tertiary: #1a1a1a;
+      --bg-elevated: #1f1f1f;
+
+      /* Text */
+      --text-primary: #F5E6D3;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --text-inverse: #0a0a0a;
+
+      /* Accents */
+      --accent-primary: #C9A962;
+      --accent-secondary: #E85A4F;
+      --accent-hover: #E8D5A3;
+      --accent-muted: rgba(201, 169, 98, 0.2);
+
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.05);
+      --border-default: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.2);
+
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+      /* Typography */
+      --font-display: 'Bebas Neue', 'Impact', sans-serif;
+      --font-body: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Weights */
+      --weight-light: 300;
+      --weight-regular: 400;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --weight-bold: 700;
+
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 3rem;
+      --space-xl: 5rem;
+      --space-2xl: 7rem;
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-base: 0.3s ease;
+      --transition-slow: 0.5s ease;
+
+      /* Container */
+      --container-xl: 1280px;
+    }
+
+    /* Reset */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Hide cursor for custom cursor */
+    body.has-cursor {
+      cursor: none;
+    }
+
+    body.has-cursor a,
+    body.has-cursor button {
+      cursor: none;
+    }
+
+    /* Container */
+    .forge-container {
+      width: 100%;
+      max-width: var(--container-xl);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    /* Section */
+    .forge-section {
+      padding: var(--space-2xl) 0;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Buttons */
+    .forge-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-lg);
+      font-family: var(--font-body);
+      font-weight: var(--weight-semibold);
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+
+    .forge-btn--primary {
+      background: var(--accent-primary);
+      color: var(--text-inverse);
+    }
+
+    .forge-btn--primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .forge-btn--outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+
+    .forge-btn--outline:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      :root {
+        --space-xl: 4rem;
+        --space-2xl: 5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      :root {
+        --space-xl: 3rem;
+        --space-2xl: 4rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --space-lg: 2rem;
+        --space-xl: 2.5rem;
+        --space-2xl: 3rem;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Content goes here -->
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis -->
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Initialize Lenis smooth scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      smooth: true,
+      smoothTouch: false
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Connect Lenis to ScrollTrigger
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  </script>
+</body>
+</html>

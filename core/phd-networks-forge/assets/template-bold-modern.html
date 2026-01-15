@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="bold-modern">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bold Modern Theme - PhD Networks Forge">
+  <title>Bold Modern | PhD Networks Forge</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       FORGE THEME: Bold Modern
+       Energetic, innovative, powerful
+       ============================================ */
+
+    :root,
+    [data-theme="bold-modern"] {
+      /* Backgrounds */
+      --bg-primary: #0D1117;
+      --bg-secondary: #161B22;
+      --bg-tertiary: #21262D;
+      --bg-elevated: #30363D;
+
+      /* Text */
+      --text-primary: #FFFFFF;
+      --text-secondary: #C9D1D9;
+      --text-muted: #8B949E;
+      --text-inverse: #0D1117;
+
+      /* Accents */
+      --accent-primary: #58A6FF;
+      --accent-secondary: #F78166;
+      --accent-hover: #79C0FF;
+      --accent-muted: rgba(88, 166, 255, 0.15);
+
+      /* Borders */
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-default: rgba(255, 255, 255, 0.16);
+      --border-hover: rgba(255, 255, 255, 0.24);
+
+      /* Shadows */
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+
+      /* Typography */
+      --font-display: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Weights */
+      --weight-light: 300;
+      --weight-regular: 400;
+      --weight-medium: 500;
+      --weight-semibold: 600;
+      --weight-bold: 700;
+      --weight-black: 900;
+
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 3rem;
+      --space-xl: 5rem;
+      --space-2xl: 7rem;
+
+      /* Radius */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      /* Transitions */
+      --transition-fast: 0.15s ease;
+      --transition-base: 0.3s ease;
+      --transition-slow: 0.5s ease;
+
+      /* Container */
+      --container-xl: 1280px;
+    }
+
+    /* Reset */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body.has-cursor {
+      cursor: none;
+    }
+
+    body.has-cursor a,
+    body.has-cursor button {
+      cursor: none;
+    }
+
+    .forge-container {
+      width: 100%;
+      max-width: var(--container-xl);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    .forge-section {
+      padding: var(--space-2xl) 0;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: var(--weight-bold);
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    a {
+      color: var(--accent-primary);
+      text-decoration: none;
+      transition: color var(--transition-fast);
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    .forge-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-lg);
+      font-family: var(--font-body);
+      font-weight: var(--weight-semibold);
+      font-size: 1rem;
+      text-decoration: none;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition-base);
+    }
+
+    .forge-btn--primary {
+      background: var(--accent-primary);
+      color: var(--text-inverse);
+    }
+
+    .forge-btn--primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(88, 166, 255, 0.3);
+    }
+
+    .forge-btn--outline {
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-default);
+    }
+
+    .forge-btn--outline:hover {
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    /* Gradient text utility */
+    .forge-gradient-text {
+      background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 1024px) {
+      :root { --space-xl: 4rem; --space-2xl: 5rem; }
+    }
+
+    @media (max-width: 768px) {
+      :root { --space-xl: 3rem; --space-2xl: 4rem; }
+    }
+
+    @media (max-width: 640px) {
+      :root { --space-lg: 2rem; --space-xl: 2.5rem; --space-2xl: 3rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Content goes here -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+  <!-- Optional: Three.js for particle effects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const lenis = new Lenis({
+      duration: 1.0, // Slightly faster for tech feel
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      smooth: true,
+      smoothTouch: false
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+  </script>
+</body>
+</html>
