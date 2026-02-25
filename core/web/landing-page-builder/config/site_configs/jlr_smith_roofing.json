@@ -5,19 +5,19 @@
   "status": "ACTIVE",
 
   "ssh": {
-    "host": "185.199.220.41",
+    "host": "c96.lon.cloudhosting.net",
     "port": 722,
     "user": "jlrsmithco",
-    "key_path": "~/.ssh/id_ed25519"
+    "key_path": "~/.ssh/krystal_ed25519"
   },
 
   "wordpress": {
     "path": "/home/jlrsmithco/public_html",
-    "version": "6.9",
+    "version": "6.9.1",
     "theme": "Astra",
-    "theme_version": "4.11.12",
-    "elementor_version": "3.32.4",
-    "elementor_pro_version": null
+    "theme_version": "4.12.1",
+    "elementor_version": "3.35.1",
+    "elementor_pro_version": "3.35.0"
   },
 
   "contact": {
@@ -69,7 +69,7 @@
     "rating": 4.9,
     "review_count": 50,
     "insurance": "Fully Insured - Public Liability & Professional Indemnity",
-    "accreditations": ["Checkatrade", "TrustMark"]
+    "accreditations": ["RESTEC", "Checkatrade", "TrustMark"]
   },
 
   "service_areas": [
@@ -83,15 +83,15 @@
 
   "tracking": {
     "ga4_measurement_id": "G-036D0M9YTZ",
-    "google_ads_id": "AW-5481658097",
-    "google_ads_conversion_label": "",
+    "google_ads_id": "AW-17698431433",
+    "google_ads_conversion_label": "cSfjCJTBgOwbEMnDovdB",
     "phone_conversion_label": ""
   },
 
   "google_ads": {
     "customer_id": "5481658097",
     "monthly_budget": 250,
-    "campaign_ids": []
+    "campaign_ids": ["23223998134"]
   },
 
   "landing_pages": [
@@ -116,5 +116,5 @@
   ],
 
   "discovered": "2026-01-13",
-  "last_updated": "2026-01-13"
+  "last_updated": "2026-02-25"
 }
